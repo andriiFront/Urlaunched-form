@@ -1,0 +1,49 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-image: url("https://media.npr.org/assets/img/2020/08/05/teacher-fears_final_wide-f20333b171f4b57ce66776b8935657e410652b66-s800-c85.jpg");
+  background-size: cover;
+  background-position: center;
+  min-height: 100vh;
+  background-color: #e9e6f2;
+  color: #4d457b;
+  font-family: "Roboto", sans-serif;
+}
+
+h2 {
+  font-size: 2rem;
+  text-align: center;
+}
+
+h3 {
+  text-align: center;
+}
+
+label,
+p {
+  margin: 0;
+}
+
+ul {
+  padding: 0;
+}
+
+%stretch-panel {
+  flex-grow: 1;
+  background-color: white;
+}
+
+.App {
+
+  &__title {
+    margin: 40px auto;
+    display: flex;
+    max-width: fit-content;
+    color: #2f4f4f;
+    font-size: 38px;
+    font-weight: bold;
+    text-align: center;
+  }
+}
