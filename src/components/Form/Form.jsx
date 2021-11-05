@@ -1,232 +1,325 @@
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
+import classnames from 'classnames';
+import icon from '../../images/icon.svg';
+import eye from '../../images/eye.svg';
+import male from '../../images/male.svg';
+import maleGreen from '../../images/maleGreen.svg';
+import female from '../../images/female.svg';
+import femaleGreen from '../../images/femaleGreen.svg';
+import othermale from '../../images/othermale.svg';
+import othermaleGreen from '../../images/othermaleGreen.svg';
 import './Form.scss';
 
-export const Form = ({ districts, jobPlaces }) => {
-  const [name, setName] = useState('');
-  const [surname, setSurname] = useState('');
-  const [phone, setPhone] = useState('');
+export const Form = () => {
+  const [gender, setGender] = useState('');
   const [email, setEmail] = useState('');
-  const [district, setDistrict] = useState('');
-  const [jobPlace, setJobPlace] = useState('');
-  const [jobPlaceName, setJobPlaceName] = useState('');
-  const [privacy, setPrivacy] = useState(false);
+  const [pswrd, setPswrd] = useState('');
+  const [confPswrd, setConfPswrd] = useState('');
 
-  const [errName, setErrName] = useState(false);
-  const [errSurname, setErrSurname] = useState(false);
-  const [errPhone, setErrPhone] = useState(false);
+  const [errGender, setErrGender] = useState(false);
   const [errEmail, setErrEmail] = useState(false);
-  const [errDistrict, setErrDistrict] = useState(false);
-  const [errJobPlace, setErrJobPlace] = useState(false);
-  const [errPrivacy, setErrPrivacy] = useState(false);
+  const [errPswrd, setErrPswrd] = useState(false);
+  const [errConfPswrd, setErrConfPswrd] = useState(false);
 
-  const [errCorrectPhone, setErrCorrectPhone] = useState(false);
   const [errCorrectEmail, setErrCorrectEmail] = useState(false);
-// eslint-disable-next-line
+  const [errCorrectPswrd, setErrCorrectPswrd] = useState(false);
+  const [errCorrectConfPswrd, setErrCorrectConfPswrd] = useState(false);
+
+  const [hiddenPswrd, setHiddencPswrd] = useState(false);
+  const [hiddenConfPswrd, setHiddenConfPswrd] = useState(false);
+
+  // eslint-disable-next-line
   const patternPhone = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
-// eslint-disable-next-line
+  // eslint-disable-next-line
   const patternEmail = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
   const onSubmit = (e) => {
     e.preventDefault();
 
     if (
-      !name
-      || !surname
-      || !phone
-      || !phone.match(patternPhone)
+      !gender
       || !email.match(patternEmail)
-      || !district
-      || !jobPlace
-      || !privacy
+      || !pswrd
+      || (pswrd.length < 6)
+      || !confPswrd
+      || (pswrd !== confPswrd)
     ) {
-      setErrName(!name);
-      setErrSurname(!surname);
-      phone
-        ? setErrCorrectPhone(!phone.match(patternPhone))
-        : setErrPhone(!phone);
-      email
-        ? setErrCorrectEmail(!email.match(patternEmail))
-        : setErrEmail(!email);
-      setErrDistrict(!district);
-      setErrJobPlace(!jobPlace);
-      setErrPrivacy(!privacy);
+      setErrGender(!gender);
+      if (email) {
+        setErrCorrectEmail(!email.match(patternEmail));
+      } else {
+        setErrEmail(!email);
+      }
+
+      if (pswrd) {
+        setErrCorrectPswrd(pswrd.length < 6);
+      } else {
+        setErrPswrd(!pswrd);
+      }
+
+      if (confPswrd) {
+        setErrCorrectConfPswrd(pswrd !== confPswrd);
+      } else {
+        setErrConfPswrd(!confPswrd);
+      }
 
       return;
     }
 
-    setName('');
-    setSurname('');
-    setPhone('');
+    const message = `
+      gender: ${gender};
+      email: ${email};
+      password: ${pswrd}
+    `;
+
+    // eslint-disable-next-line
+    alert(message);
+
+    setGender('');
     setEmail('');
-    setDistrict('');
-    setJobPlace('');
-    setJobPlaceName('');
-    setPrivacy(false);
+    setPswrd('');
+    setConfPswrd('');
   };
 
   return (
-    <form className="form consultation__form" onSubmit={onSubmit}>
+    <form className="form consultation__form" method="POST" onSubmit={onSubmit}>
+      <img className="form__icon" src={icon} alt="icon" />
 
-      {errName && <p className="form__error-empty">введіть ім&apos;я</p>}
-      <input
-        value={name}
-        className="form__inpt"
-        id="name"
-        type="text"
-        name="name"
-        placeholder="Ім'я"
-        onChange={(e) => {
-          setErrName(false);
-          setName(e.target.value);
-        }}
-      />
+      <h1 className="form__heading">
+        Sign Up with email
+      </h1>
 
-      {errSurname && <p className="form__error-empty">введіть прізвище</p>}
-      <input
-        value={surname}
-        className="form__inpt"
-        id="surname"
-        type="text"
-        name="surname"
-        placeholder="Прізвище"
-        onChange={(e) => {
-          setErrSurname(false);
-          setSurname(e.target.value);
-        }}
-      />
-
-      {errPhone && <p className="form__error-empty">введіть телефон</p>}
-      {errCorrectPhone && (
-        <p className="form__error-empty">
-          невірний формат номеру телефона
-        </p>
-      )}
-      <input
-        value={phone}
-        className="form__inpt"
-        id="phone"
-        type="tel"
-        name="phone"
-        placeholder="Phone"
-        onChange={(e) => {
-          setErrPhone(false);
-          setErrCorrectPhone(false);
-          setPhone(e.target.value);
-        }}
-      />
-
-      {errEmail && <p className="form__error-empty">введіть E-mail</p>}
-      {errCorrectEmail && (
-        <p className="form__error-empty">
-          невірний формат електронної адреси
-        </p>
-      )}
-      <input
-        value={email}
-        className="form__inpt"
-        id="email"
-        type="text"
-        name="email"
-        placeholder="E-mail"
-        onChange={(e) => {
-          setErrEmail(false);
-          setErrCorrectEmail(false);
-          setEmail(e.target.value);
-        }}
-      />
-
-      {errDistrict && <p className="form__error-empty">Виберіть область</p>}
-      <select
-        className="form__inpt"
-        value={district}
-        id="district"
-        name="district"
-        onChange={(e) => {
-          setErrDistrict(false);
-          setDistrict(e.target.value);
-        }}
-      >
-        <option value="">Виберіть область</option>
-        {districts.map(item => (
-          <option key={item} value={item}>
-            {item}
-          </option>
-        ))}
-
-      </select>
-
-      {errJobPlace && (
-        <p className="form__error-empty">
-          Виберіть місце роботи
-        </p>
-      )}
-      <select
-        className="form__inpt"
-        value={jobPlace}
-        id="jobPlace"
-        name="jobPlace"
-        onChange={(e) => {
-          setErrJobPlace(false);
-          setJobPlace(e.target.value);
-        }}
-      >
-        <option value="">Назва місця роботи</option>
-        {jobPlaces.map(item => (
-          <option key={item} value={item}>
-            {item}
-          </option>
-        ))}
-      </select>
-
-      <input
-        value={jobPlaceName}
-        className="form__inpt"
-        id="jobPlaceName"
-        type="text"
-        name="jobPlaceName"
-        placeholder="Назва місця роботи"
-        onChange={(e) => {
-          setJobPlaceName(e.target.value);
-        }}
-      />
-
-      {errPrivacy && (
-        <p className="form__error-empty">
-          Необхідно ознайомтись та надати згоду
-        </p>
-      )}
-      <label className="form__inpt" htmlFor="privacy">
-        Згоден з умовами договору публічної оферти
-        <input
-          type="checkbox"
-          id="privacy"
-          name="privacy"
-          checked={privacy}
+      <div className="form__label">
+        <h2 className="form__subheading">Gender</h2>
+        <div
+          className="form__radio-container"
           onChange={(e) => {
-            setErrPrivacy(false);
-            setPrivacy(e.target.checked);
+            setErrGender(false);
+            setGender(e.target.value);
+          }}
+        >
+          <label className={classnames(
+            'form__inpt',
+            'form__inpt-gender',
+            { 'form__inpt-checked': gender === 'male' },
+          )}
+          >
+            <input
+              className="form__radio-inpt"
+              type="radio"
+              value="male"
+              name="gender"
+              defaultChecked={gender === 'male'}
+            />
+            <img
+              className="form__radio-icon"
+              src={gender === 'male' ? maleGreen : male}
+              alt="male"
+            />
+            <span className="form__radio-txt">Male</span>
+          </label>
+          <label className={classnames(
+            'form__inpt',
+            'form__inpt-gender',
+            { 'form__inpt-checked': gender === 'female' },
+          )}
+          >
+            <input
+              className="form__radio-inpt"
+              type="radio"
+              value="female"
+              name="gender"
+              defaultChecked={gender === 'female'}
+            />
+            <img
+              className="form__radio-icon"
+              src={gender === 'female' ? femaleGreen : female}
+              alt="female"
+            />
+            <span className="form__radio-txt">Female</span>
+          </label>
+          <label className={classnames(
+            'form__inpt',
+            'form__inpt-gender',
+            { 'form__inpt-checked': gender === 'other' },
+          )}
+          >
+            <input
+              className="form__radio-inpt"
+              type="radio"
+              value="other"
+              name="gender"
+              defaultChecked={gender === 'other'}
+            />
+            <img
+              className="form__radio-icon"
+              src={gender === 'other' ? othermaleGreen : othermale}
+              alt="ohter"
+            />
+            <span className="form__radio-txt">Other</span>
+          </label>
+        </div>
+        {errGender && (
+          <p className="form__error-descr">
+            please select your gender
+          </p>
+        )}
+      </div>
+
+      <label className="form__label" htmlFor="email">
+        <h2 className="form__subheading">E-mail</h2>
+        <input
+          value={email}
+          className={classnames(
+            'form__inpt',
+            { 'form__inpt-error': (errEmail || errCorrectEmail) },
+          )}
+          id="email"
+          type="text"
+          name="email"
+          placeholder={classnames(
+            { 'E-mail': (!errEmail && !errCorrectEmail) },
+            { 'No e-mail': errEmail },
+          )}
+          onChange={(e) => {
+            setErrEmail(false);
+            setErrCorrectEmail(false);
+            setEmail(e.target.value);
           }}
         />
+        {errEmail && (
+          <p className="form__error-descr">
+            please enter your e-mail
+          </p>
+        )}
+        {errCorrectEmail && (
+          <p className="form__error-descr">
+            invalid email format
+          </p>
+        )}
+      </label>
+
+      <label className="form__label" htmlFor="password">
+        <h2 className="form__subheading">Create Password</h2>
+        <div className={classnames(
+          'form__inpt',
+          { 'form__inpt-error': (errPswrd || errCorrectPswrd) },
+        )}
+        >
+          <input
+            value={pswrd}
+            id="password"
+            className="form__inpt-field"
+            type={hiddenPswrd ? 'text' : 'password'}
+            name="password"
+            placeholder="password"
+            onChange={(e) => {
+              setErrPswrd(false);
+              setErrCorrectPswrd(false);
+              setPswrd(e.target.value);
+            }}
+          />
+          <button
+            className="form__psw-btn"
+            type="button"
+            onClick={() => setHiddencPswrd(!hiddenPswrd)}
+          >
+            <img
+              src={eye}
+              alt="show/hide password"
+              className="form__psw-icon"
+            />
+          </button>
+        </div>
+        {errPswrd && (
+          <p className="form__error-descr">
+            please enter your password
+          </p>
+        )}
+        {errCorrectPswrd && (
+          <p className="form__error-descr">
+            password must be at least six charachters long
+          </p>
+        )}
+      </label>
+
+      <label className="form__label" htmlFor="confirm password">
+        <h2 className="form__subheading">Confirm Password</h2>
+        <div className={classnames(
+          'form__inpt',
+          { 'form__inpt-error': (errConfPswrd || errCorrectConfPswrd) },
+        )}
+        >
+          <input
+            value={confPswrd}
+            id="confirm password"
+            className="form__inpt-field"
+            type={hiddenConfPswrd ? 'text' : 'password'}
+            name="confirm password"
+            placeholder="confirm password"
+            onChange={(e) => {
+              setErrConfPswrd(false);
+              setErrCorrectConfPswrd(false);
+              setConfPswrd(e.target.value);
+            }}
+          />
+          <button
+            className="form__psw-btn"
+            type="button"
+            onClick={() => setHiddenConfPswrd(!hiddenConfPswrd)}
+          >
+            <img
+              src={eye}
+              alt="show/hide password"
+              className="form__psw-icon"
+            />
+          </button>
+        </div>
+        {errConfPswrd && (
+          <p className="form__error-descr">
+            please confirm password
+          </p>
+        )}
+        {errCorrectConfPswrd && (
+          <p className="form__error-descr">
+            password must match
+          </p>
+        )}
       </label>
 
       <button
         className="form__button"
         type="submit"
       >
-        Відправити
+        Sign Up
       </button>
+
+      <p className="form__text">
+        Already have an account?
+        {' '}
+        <a
+          href="https://www.google.com/"
+          className="form__link"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Log In
+        </a>
+      </p>
+
+      <p className="form__text">
+        Review privacy and disclosures here
+        {' '}
+        <a
+          href="https://www.google.com/"
+          className="form__link"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          here
+        </a>
+      </p>
 
     </form>
   );
-};
-
-Form.propTypes = {
-  districts: PropTypes.arrayOf(PropTypes.string),
-  jobPlaces: PropTypes.arrayOf(PropTypes.string),
-};
-
-Form.defaultProps = {
-  districts: [],
-  jobPlaces: [],
 };
